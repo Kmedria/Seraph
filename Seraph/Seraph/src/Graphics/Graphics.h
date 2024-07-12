@@ -7,6 +7,11 @@
 #include <stdexcept>
 #include <cstdlib> 
 #include <vector>
+#include <optional>
+
+#include <cstdint> // Necessary for uint32_t
+#include <limits> // Necessary for std::numeric_limits
+#include <algorithm> // Necessary for std::clamp
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -19,6 +24,21 @@ struct vertices {
     unsigned char colour[4];
 };
 
+struct SwapChainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> presentModes;
+};
+
+struct QueueFamilyIndices {
+    std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
+
+    bool isComplete() {
+        return graphicsFamily.has_value() && presentFamily.has_value();
+    }
+};
+
 class Graphics {
 private:
 
@@ -26,8 +46,11 @@ private:
 
     GLFWwindow* window = NULL;
     VkInstance instance;
-    //unsigned int VBO = -1, VAO = -1, EBO = -1;
-    //unsigned int shaderProgram;
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    VkDevice device;
+    VkQueue graphicsQueue, presentQueue;
+    VkSurfaceKHR surface;
+    VkSwapchainKHR swapChain;
 
     int screenWidth = 1920; // to detect later and change
     int screenHeight = 1080; // can and will change later
@@ -36,7 +59,7 @@ private:
 
     std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
     VkDebugUtilsMessengerEXT debugMessenger;
-    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
     //float aspectRatio = (float)screenHeight / (float)screenWidth;
 
@@ -57,12 +80,19 @@ public:
     int initWindow();
     int initVulkan();
     void createInstance();
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
     void pickPhysicalDevice();
+    void createLogicalDevice();
+    void createSwapChain();
+    void createSurface();
 
     bool isWindowOpen();
     bool isDeviceSuitable(VkPhysicalDevice device);
     bool checkValidationLayerSupport();
+    bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     std::vector<const char*> getRequiredExtensions();
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
     void setupDebugMessenger();
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -70,13 +100,15 @@ public:
         const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
         void* pUserData) {
 
-        std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+        std::cout << "validation layer: " << pCallbackData->pMessage << std::endl;
 
         return VK_FALSE;
     }
 
     VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
+    
     void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-
+    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 };
