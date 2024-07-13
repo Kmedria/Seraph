@@ -18,19 +18,21 @@ int GameDev::run() {
 	// set world data
 	// draw initial graphics
 
-	while (graphics.isWindowOpen())
-	{
+	while (graphics.isWindowOpen()) { 
+		
 		// Recieve controller/keyboard input
-
+		
+		glfwPollEvents();
+		
 		// update enemy data
 		// update terrain data
 
 		// draw frame data
 		//
-		// graphics.draw();
-
-		glfwPollEvents();
+		graphics.draw();
 	}
+
+	graphics.waitForDeviceIdle();
 	return 0;
 }
 
