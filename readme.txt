@@ -774,4 +774,4 @@ BOO!
 
 
 
-ALT+F4 - click this button combination when gaming to give you a once in a session experience.
+Press ALT+F4 to free wasted resources used by your system and give you a performance boost.
