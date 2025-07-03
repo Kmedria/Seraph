@@ -19,17 +19,7 @@ Seraph Eventually needs:
 Currently I am:
 - Intergrating Imgui for window managemnet + in-run editing.
 
-Inline-style: 
-![alt text](https://github.com/Kmedria/Seraph/blob/main/shaded%20teapot..png "Seraph Engine shaded teapot")
+Renderer/Shading Sample: 
+![Renderer/Shading Sample](https://github.com/Kmedria/Seraph/blob/main/shaded%20teapot..png "Seraph Engine shaded teapot")
 
-The image above
-
-Here's our logo (hover to see the title text):
-
-Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
-
-Reference-style: 
-![alt text][logo]
-
-[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+- The image above shows a sample of the renderer showing a rendered and shaded Utah Teapot.
